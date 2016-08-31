@@ -18,8 +18,10 @@ def run_hicpro(
     Args:
         input_path: string, the path of input files
         output_path: string, the path of output
-        hicpro_path: string, install path of HiC-Pro, has been set for knight server
-        config_template_path: string, the path of config template, has been set for knight server
+        hicpro_path: string, install path of HiC-Pro,
+        has been set for knight server
+        config_template_path: string, the path of config template,
+        has been set for knight server
     Returns:
         0
     """
@@ -80,9 +82,10 @@ def call_tad(matrix_file, output_file, window_size=5):
 
     Args:
         matrix_file: the path of matrix file
-        output_file: the path of output, the outputs are .bed, .domain and .binSignal
-        window_size: window size
-        For more details, see TopDom's manual, http://zhoulab.usc.edu/TopDom/TopDom%20Manual_v0.0.2.pdf
+        output_file: the path of output, the outputs are .bed, .domain
+        and .binSignal
+        window_size: window size, For more details, see TopDom's manual:
+                     http://zhoulab.usc.edu/TopDom/TopDom%20Manual_v0.0.2.pdf
     Returns:
         0
     """
@@ -100,8 +103,9 @@ def call_tad(matrix_file, output_file, window_size=5):
 
 
 def hic_pipeline(sample_name, input_dir, output_dir, resolution, window_size=5):
-    """This function use Hic-Pro's outputs as inputs, automatically generate full matrix from sparse matrix and
-       call TAD for each chromosome. For each sample or Hi-C experiment, the function will generate a project
+    """This function use Hic-Pro's outputs as inputs, automatically generate
+       full matrix from sparse matrix and call TAD for each chromosome.
+       For each sample or Hi-C experiment, the function will generate a project
        which is a directory containing the files for full matrix and TADs.
 
        Args:
@@ -166,7 +170,7 @@ def hic_pipeline(sample_name, input_dir, output_dir, resolution, window_size=5):
         matrix_file = os.path.join(iced_out, key)
         output_file = os.path.join(tad_out, key)
         try:
-            call_tad(matrix_file, output_file, window_size=5)
+            call_tad(matrix_file, output_file, window_size=window_size)
         except:
             fail_files.append(matrix_file)
     print('Fail to call TAD from file: {}'.format(matrix_file))
