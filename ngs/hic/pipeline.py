@@ -4,7 +4,6 @@
 import numpy as np
 import os
 import pandas as pd
-# import rpy2
 import rpy2.robjects as robjects
 import subprocess
 
@@ -33,6 +32,48 @@ def run_hicpro(
     print('Run: {}'.format(cmd))
     subprocess.Popen(cmd, shell=True)
     return 0
+
+
+def copy_to_db(df, table_name,
+               engine=sqlalchemy.create_engine(
+                   'postgresql://wangyn@localhost/lung_cancer_db'),
+               if_exists='fail'):
+    """Copy a DataFrame to database
+
+    Args:
+        df: the DataFrame to be copied
+        table_name: the name to be assigned in the database
+        engine: sqlalchemy engine
+        if_exists: what to do if the table has existed
+    Returns:
+        0
+    """
+    try:
+        df.to_sql(table_name, engine, if_exists=if_exists, index=False)
+        return 0
+    except ValueError:
+        print('The table {} has existed.'.format(table_name))
+        return 1
+
+
+def load_hicpro_outputs(matrix_path, bed_path):
+    """Load the outputs of HiC-Pro
+
+    Args:
+        matrix_path: the path of matrix file
+        bed_path: the path of bed file
+    Returns:
+        hicpro_dict, a dict containing both matrix and bed data outputed from HiC-Pro
+    """
+    hicpro_dict = {}
+    matrix_data = pd.read_table(matrix_path, header=None,
+                                names=['bin_1', 'bin_2', 'counts'])
+    bed_data = pd.read_table(bed_path, header=None,
+                             names=['chrom', 'bin_start', 'bin_end',
+                                    'bin_index'])
+    hicpro_dict['matrix'] = matrix_data
+    hicpro_dict['bed'] = bed_data
+    return hicpro_dict
 
 
 def load_hic(matrix_path, bed_path):
